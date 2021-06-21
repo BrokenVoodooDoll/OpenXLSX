@@ -46,6 +46,7 @@ YM      M9  MM    MM MM       MM    MM   d'  `MM.    MM            MM   d'  `MM.
 // ===== External Includes ===== //
 #include <nowide/fstream.hpp>
 #include <pugixml.hpp>
+#include <filesystem>
 #if defined(_WIN32) && (UNICODE_FILENAMES_ENABLED)
 #    include <cstdio>
 #    include <random>
@@ -493,6 +494,9 @@ void XLDocument::open(const std::string& fileName)
 
     // ===== Add remaining spreadsheet elements to the vector of XLXmlData objects.
     for (auto& item : m_contentTypes.getContentItems()) {
+        if (std::filesystem::path(item.path()).extension() != ".xml")
+            continue;
+
         if (item.path().substr(0, 4) == "/xl/" && !(item.path() == "/xl/workbook.xml"))
             m_data.emplace_back(/* parentDoc */ this,
                                 /* xmlPath   */ item.path().substr(1),
