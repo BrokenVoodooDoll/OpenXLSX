@@ -292,6 +292,125 @@ namespace OpenXLSX
         void insertSheetName(const std::string& sheetName, unsigned int index);
     };
 
+    /**
+     * @brief
+     */
+    class OPENXLSX_EXPORT XLCustomProperties : public XLXmlFile
+    {
+        //----------------------------------------------------------------------------------------------------------------------
+        //           Public Member Functions
+        //----------------------------------------------------------------------------------------------------------------------
+
+    public:
+        /**
+         * @brief
+         */
+        XLCustomProperties() = default;
+
+        /**
+         * @brief
+         * @param xmlData
+         */
+        explicit XLCustomProperties(XLXmlData* xmlData);
+
+        /**
+         * @brief
+         * @param other
+         */
+        XLCustomProperties(const XLCustomProperties& other) = default;
+
+        /**
+         * @brief
+         * @param other
+         */
+        XLCustomProperties(XLCustomProperties&& other) noexcept = default;
+
+        /**
+         * @brief
+         */
+        ~XLCustomProperties();
+
+        /**
+         * @brief
+         * @param other
+         * @return
+         */
+        XLCustomProperties& operator=(const XLCustomProperties& other) = default;
+
+        /**
+         * @brief
+         * @param other
+         * @return
+         */
+        XLCustomProperties& operator=(XLCustomProperties&& other) = default;
+
+        /**
+         * @brief
+         * @param name
+         * @param value
+         * @return
+         */
+        bool setProperty(const std::string& name, const std::string& value);
+
+        /**
+         * @brief
+         * @param name
+         * @param value
+         * @return
+         */
+        bool setProperty(const std::string& name, int value);
+
+        /**
+         * @brief
+         * @param name
+         * @param value
+         * @return
+         */
+        bool setProperty(const std::string& name, double value);
+
+        /**
+         * @brief
+         * @param name
+         * @param value
+         * @return
+         */
+        bool setProperty(const std::string& name, bool value);
+
+        /**
+         * @brief
+         * @param name
+         * @param value
+         * @return
+         */
+        bool setProperty(const std::string& name, const std::tm& value);
+
+        /**
+         * @brief
+         * @param name
+         * @return
+         */
+        std::string property(const std::string& name) const;
+
+        /**
+         * @brief
+         * @param
+         * @return
+         */
+        std::vector<std::string> propertyNames() const;
+
+        /**
+         * @brief
+         * @param name
+         */
+        void deleteProperty(const std::string& name);
+
+        //----------------------------------------------------------------------------------------------------------------------
+        //           Protected Member Functions
+        //----------------------------------------------------------------------------------------------------------------------
+
+    protected:
+        bool createCustomProperty(const std::string& name, const std::string& value, const std::string& type);
+    };
 }    // namespace OpenXLSX
 
 #pragma warning(pop)

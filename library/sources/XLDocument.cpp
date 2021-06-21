@@ -513,6 +513,7 @@ void XLDocument::open(const std::string& fileName)
     // ===== Open the workbook and document property items
     m_coreProperties = XLProperties(getXmlData("docProps/core.xml"));
     m_appProperties  = XLAppProperties(getXmlData("docProps/app.xml"));
+    m_customProperties = XLCustomProperties(getXmlData("docProps/custom.xml")); 
     m_sharedStrings  = XLSharedStrings(getXmlData("xl/sharedStrings.xml"));
     m_workbook       = XLWorkbook(getXmlData("xl/workbook.xml"));
 }
@@ -591,6 +592,7 @@ void XLDocument::saveAs(const std::string& fileName)
 
     // ===== Add all xml items to archive and save the archive.
     for (auto& item : m_data) m_archive.addEntry(item.getXmlPath(), item.getRawData());
+    
     m_archive.save(m_filePath);
 #endif
 }
@@ -673,6 +675,70 @@ std::string XLDocument::property(XLProperty prop) const
         default:
             return "";    // To silence compiler warning.
     }
+}
+
+/**
+ * @details Set the value for a custom property.
+ */
+void XLDocument::setCustomProperty(const std::string& name, const std::string& value)
+{
+    m_customProperties.setProperty(name, value);
+}
+
+/**
+ * @details Set the value for a custom property.
+ */
+void XLDocument::setCustomProperty(const std::string& name, int value)
+{
+    m_customProperties.setProperty(name, value);
+}
+
+/**
+ * @details Set the value for a custom property.
+ */
+void XLDocument::setCustomProperty(const std::string& name, double value)
+{
+    m_customProperties.setProperty(name, value);
+}
+
+/**
+ * @details Set the value for a custom property.
+ */
+void XLDocument::setCustomProperty(const std::string& name, bool value)
+{
+    m_customProperties.setProperty(name, value);
+}
+
+/**
+ * @details Set the value for a custom property.
+ */
+void XLDocument::setCustomProperty(const std::string& name, const std::tm& value)
+{
+    m_customProperties.setProperty(name, value);
+}
+
+/**
+ * @details Delete a custom property
+ */
+void XLDocument::deleteCustomProperty(const std::string& name)
+{
+    setCustomProperty(name, "");
+}
+
+/**
+ * @details Get custom property names
+ */
+std::vector<std::string> XLDocument::customPropertyNames() const
+{
+    return m_customProperties.propertyNames();
+}
+
+/**
+ * @details Get the value for a custom property.
+ */
+std::string XLDocument::customProperty(const std::string& name) const
+{
+    return m_customProperties.property(name);
 }
 
 /**

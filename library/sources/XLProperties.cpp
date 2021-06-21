@@ -44,6 +44,10 @@ YM      M9  MM    MM MM       MM    MM   d'  `MM.    MM            MM   d'  `MM.
  */
 
 #include <pugixml.hpp>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 // ===== External Includes ===== //
 #include "XLDocument.hpp"
@@ -330,4 +334,107 @@ void XLAppProperties::insertSheetName(const std::string& sheetName, unsigned int
     theNode.text().set(sheetName.c_str());
 
     sheetCount(xmlDocument().document_element()).set_value(sheetCount(xmlDocument().document_element()).as_uint() + 1);
+}
+
+/**
+ * @details
+ */
+XLCustomProperties::XLCustomProperties(XLXmlData* xmlData) : XLXmlFile(xmlData) {}
+
+XLCustomProperties::~XLCustomProperties() = default;
+
+/**
+ * @details
+ */
+bool XLCustomProperties::setProperty(const std::string& name, const std::string& value)
+{
+    return createCustomProperty(name, value, "vt:lpwstr");
+}
+
+/**
+ * @details
+ */
+bool XLCustomProperties::setProperty(const std::string& name, int value)
+{
+    return createCustomProperty(name, std::to_string(value), "vt:i8");
+}
+
+/**
+ * @details
+ */
+bool XLCustomProperties::setProperty(const std::string& name, double value)
+{
+    return createCustomProperty(name, std::to_string(value), "vt:r8");
+}
+
+/**
+ * @details
+ */
+bool XLCustomProperties::setProperty(const std::string& name, bool value)
+{
+    return createCustomProperty(name, value ? "true" : "false", "vt:bool");
+}
+
+/**
+ * @details
+ */
+bool XLCustomProperties::setProperty(const std::string& name, const std::tm& value)
+{
+    std::stringstream ss;
+    ss << std::put_time(&value, "%FT%TZ");
+    std::string datetime = ss.str();   
+
+    return createCustomProperty(name, datetime, "vt:filetime");
+}
+
+/**
+ * @details
+ */
+std::string XLCustomProperties::property(const std::string& name) const
+{
+    auto property = xmlDocument().first_child().find_child_by_attribute("name", name.c_str()).first_child();
+    if (!property) return "";
+    return property.text().get();
+}
+
+/**
+ * @details
+ */
+std::vector<std::string> XLCustomProperties::propertyNames() const
+{
+    std::vector<std::string> names;
+    for (auto child : xmlDocument().first_child())
+        names.push_back(child.attribute("name").value());
+
+    return names;
+}
+
+/**
+ * @details
+ */
+void XLCustomProperties::deleteProperty(const std::string& name)
+{
+    auto property = xmlDocument().first_child().find_child_by_attribute("name", name.c_str());
+    if (property != nullptr) xmlDocument().first_child().remove_child(property);
+}
+
+bool XLCustomProperties::createCustomProperty(const std::string& name, const std::string& value, const std::string& type)
+{
+    XMLNode node = xmlDocument().first_child().find_child_by_attribute("name", name.c_str()).first_child();
+    if (node == nullptr) {
+        node = xmlDocument().first_child().append_child("property");
+        node.append_attribute("fmtid").set_value("{D5CDD505-2E9C-101B-9397-08002B2CF9AE}");
+        node.append_attribute("pid").set_value(0);
+        node.append_attribute("name").set_value(name.c_str());
+        node = node.append_child(type.c_str());
+    }
+
+    node.text().set(value.c_str());
+
+    // fix PIDs
+    int pid = 2;
+    for (auto child : xmlDocument().first_child())
+        child.attribute("pid").set_value(pid++);
+
+    return true;
 }

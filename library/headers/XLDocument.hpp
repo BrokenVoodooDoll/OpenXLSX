@@ -229,6 +229,60 @@ namespace OpenXLSX
         void deleteProperty(XLProperty theProperty);
 
         /**
+         * @brief Get the requested document custom property.
+         * @param prop The name of the custom property to get.
+         * @return The property as a string
+         */
+        std::string customProperty(const std::string& name) const;
+
+        /**
+         * @brief Set a custom property
+         * @param prop The custom property to set.
+         * @param value The value of the custom property, as a string
+         */
+        void setCustomProperty(const std::string& name, const std::string& value);
+
+        /**
+         * @brief Set a custom property
+         * @param prop The custom property to set.
+         * @param value The value of the custom property, as int
+         */
+        void setCustomProperty(const std::string& name, int value);
+
+        /**
+         * @brief Set a custom property
+         * @param prop The custom property to set.
+         * @param value The value of the custom property, as double
+         */
+        void setCustomProperty(const std::string& name, double value);
+
+        /**
+         * @brief Set a custom property
+         * @param prop The custom property to set.
+         * @param value The value of the custom property, as bool
+         */
+        void setCustomProperty(const std::string& name, bool value);
+
+        /**
+         * @brief Set a custom property
+         * @param prop The custom property to set.
+         * @param value The value of the custom property, as datetime
+         */
+        void setCustomProperty(const std::string& name, const std::tm& value);
+
+        /**
+         * @brief Delete the custom property from the document
+         * @param theProperty The custom property to delete from the document
+         */
+        void deleteCustomProperty(const std::string& name);
+
+        /**
+         * @brief Get the requested document custom property names.
+         * @return The vector of property names as a strings
+         */
+        std::vector<std::string> customPropertyNames() const;
+
+        /**
          * @brief
          * @param command
          */
@@ -498,14 +552,15 @@ namespace OpenXLSX
         std::string                  m_realPath {}; /**<  */
         mutable std::list<XLXmlData> m_data {};     /**<  */
 
-        XLRelationships m_docRelationships; /**< A pointer to the document relationships object*/
-        XLRelationships m_wbkRelationships; /**< A pointer to the document relationships object*/
-        XLContentTypes  m_contentTypes;     /**< A pointer to the content types object*/
-        XLAppProperties m_appProperties;    /**< A pointer to the App properties object */
-        XLProperties    m_coreProperties;   /**< A pointer to the Core properties object*/
-        XLSharedStrings m_sharedStrings;    /**<  */
-        XLWorkbook      m_workbook;         /**< A pointer to the workbook object */
-        XLZipArchive    m_archive;          /**<  */
+        XLRelationships     m_docRelationships; /**< A pointer to the document relationships object*/
+        XLRelationships     m_wbkRelationships; /**< A pointer to the document relationships object*/
+        XLContentTypes      m_contentTypes;     /**< A pointer to the content types object*/
+        XLAppProperties     m_appProperties;    /**< A pointer to the App properties object */
+        XLProperties        m_coreProperties;   /**< A pointer to the Core properties object*/
+        XLCustomProperties  m_customProperties;   /**< A pointer to the Custom properties object*/
+        XLSharedStrings     m_sharedStrings;    /**<  */
+        XLWorkbook          m_workbook;         /**< A pointer to the workbook object */
+        XLZipArchive        m_archive;          /**<  */
     };
 
 }    // namespace OpenXLSX
